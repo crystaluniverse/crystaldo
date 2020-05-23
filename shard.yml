@@ -1,0 +1,20 @@
+name: crystaldo
+version: 0.1.0
+
+authors:
+  - kristof <kristof@incubaid.com>
+
+targets:
+  crystaldo:
+    main: src/crystaldo.cr
+
+dependencies:
+  # terminimal:
+  #   github: aca-labs/terminimal    
+  clim:
+    github: at-grandpa/clim
+    version: 0.12.0
+    
+crystal: 0.34.0
+
+license: MIT
