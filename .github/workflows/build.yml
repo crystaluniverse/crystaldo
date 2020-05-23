@@ -21,3 +21,11 @@ jobs:
       run: shards install
     - name: build
       run: shards build
+    - name: Upload binaries to release
+      uses: crystaldo/upload-release-action@v1-release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: bin/crystaldo
+        asset_name: crystaldo
+        tag: ${{ github.ref }}
+        overwrite: true
