@@ -3,6 +3,15 @@
 TODO: Write a description here
 
 
+
+## to get started
+
+a oneliner gets you going
+
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/threefoldfoundation/crystaldo/master/install.sh)"
+```
+
 ## libs used
 
 - https://aca-labs.github.io/terminimal/

@@ -1,7 +1,7 @@
 set +ex
-crystal docs --output=./docs/tc
+crystal docs --output=./docs/ct
 shards build
-cp bin/tc /usr/local/bin
+cp bin/crystaldo /usr/local/bin/ct
 mkdir -p ~/Downloads/
-cp bin/tc ~/Downloads/tc
+cp bin/crystaldo ~/Downloads/ct
 

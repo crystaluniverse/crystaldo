@@ -1,5 +1,22 @@
+
 #!/bin/bash
 set -ex
+
+if [[ "$1" == pull || "$2" == pull ]]
+then
+    # echo PULL
+    PULL=1
+else
+    PULL=0
+fi
+
+if [[ "$1" == reset || "$2" == reset ]]
+then
+    # echo RESET
+    RESET=1
+else
+    RESET=0
+fi
 
 if [[ "$OSTYPE" != "darwin"* ]] && [[ "$OSTYPE" != "linux-gnu"* ]]; then
     echo OS is not supported ..
@@ -20,12 +37,6 @@ if ! [ -x "$(command -v crystal)" ]; then
             apt install crystal -y
 
         fi
-        # # install nodejs
-        # if ! [ -x "$(command -v node)" ]; then
-        #   curl -sL https://deb.nodesource.com/setup_14.x | bash -  ; \
-        #   sudo apt-get install nodejs -y
-
-        # fi
     fi
 
     if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -36,6 +47,8 @@ if ! [ -x "$(command -v crystal)" ]; then
             echo 'Error: brew is not installed, please do so' >&2
             exit 1
             fi
+        
+        fi
 
         brew install crystal
         brew install git
@@ -50,36 +63,42 @@ echo 'Error: git is not installed, please install git' >&2
 exit 1
 fi
 
-if ! [ -x "$(command -v crystal)" ]; then
-echo 'Error: git is not installed, please install crystal' >&2
-exit 1
-fi
 
-# if ! [ -x "$(command -v node)" ]; then
-# echo 'Error: node is not installed, please install node' >&2
-# exit 1
-# fi
+export DEST=~/code/github/crystaluniverse/
+if [ -d "$DEST/crystaltools" ] ; then
+    cd $DEST/crystaldo
+    if [ "$PULL" = "1" ]; then git pull; fi
+else
+    mkdir -p $DEST
+    cd $DEST
+    git clone "git@github.com:crystaluniverse/crystaltools"
+fi
 
 export DEST=~/code/github/crystaluniverse/
 if [ -d "$DEST/crystaldo" ] ; then
     cd $DEST/crystaldo
-    echo " - CRYSTALDO DIR ALREADY THERE, pullling it .."
-    git pull
+    if [ "$PULL" = "1" ]; then git pull; fi
 else
     mkdir -p $DEST
     cd $DEST
     git clone "git@github.com:crystaluniverse/crystaldo"
 fi
 
-if ! [ -x "$(command -v tc)" ]; then
+cd $DEST/crystaldo
+
+if [ "$RESET" = "1" ]
+then
+    rm -f /usr/local/bin/ct
+fi
+
+if ! [ -x "$(command -v ct)" ]; then
     # rm -f /usr/local/bin/ct 2>&1 > /dev/null
-    cd $DEST/crystaldo
     bash build.sh
 fi
 
 
-if ! [ -x "$(command -v tc)" ]; then
-echo 'Error: crystal tools did not build' >&2
-exit 1
+if ! [ -x "$(command -v ct)" ]; then
+    echo 'Error: crystal tools did not build' >&2
+    exit 1
 fi
 

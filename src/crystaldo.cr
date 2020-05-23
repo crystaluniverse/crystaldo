@@ -25,13 +25,14 @@ module CrystalTool
             url e.g. git@github.com:at-grandpa/clim.git
             "
 
-            argument "dest", type: String
+          argument "dest", type: String,
             desc: "
               destination if not specified will be
-                 ~code/github/at-grandpa/clim
-              "            
+              ~code/github/at-grandpa/clim
+              "
 
           option "-v", "--verbose", type: Bool, desc: "Verbose."  
+          option "-name", "--name", type: Bool, desc: "Will look for destination in ~/code which has this name, if found will use it"  
           option "-r", "--reset", type: Bool, desc: "Will reset the local git, means overwrite whatever changes done."  
           desc "get git repository, if local changes will ask to commit if in interactive mode (default)"
           usage "ct git get [options] [url]"
