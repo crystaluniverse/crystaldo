@@ -10,7 +10,7 @@ on:
 
 jobs:
   example:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: MeilCli/setup-crystal-action@v3
         with: 
