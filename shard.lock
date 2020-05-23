@@ -4,6 +4,10 @@ shards:
     github: at-grandpa/clim
     version: 0.12.0
 
+  crystaldocker:
+    github: crystaluniverse/crystaldocker
+    commit: ad269cd10adc77d3ddd70fd9bea682305c5f4c5e
+
   crystaltools:
     github: crystaluniverse/crystaltools
     commit: e3126f87050fa90c79ae610c5118c6a07512fcc2
