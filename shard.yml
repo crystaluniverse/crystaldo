@@ -18,6 +18,8 @@ dependencies:
   clim:
     github: at-grandpa/clim
     version: 0.12.0
+  kemal:
+    github: kemalcr/kemal    
     
 crystal: 0.34.0
 
