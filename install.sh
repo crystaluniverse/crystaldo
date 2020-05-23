@@ -65,8 +65,9 @@ fi
 
 
 export DEST=~/code/github/crystaluniverse/
+
 if [ -d "$DEST/crystaltools" ] ; then
-    cd $DEST/crystaldo
+    cd $DEST/crystaltools
     if [ "$PULL" = "1" ]; then git pull; fi
 else
     mkdir -p $DEST
@@ -74,7 +75,15 @@ else
     git clone "git@github.com:crystaluniverse/crystaltools"
 fi
 
-export DEST=~/code/github/crystaluniverse/
+if [ -d "$DEST/crystaldocker" ] ; then
+    cd $DEST/crystaldocker
+    if [ "$PULL" = "1" ]; then git pull; fi
+else
+    mkdir -p $DEST
+    cd $DEST
+    git clone "git@github.com:crystaluniverse/crystaldocker"
+fi
+
 if [ -d "$DEST/crystaldo" ] ; then
     cd $DEST/crystaldo
     if [ "$PULL" = "1" ]; then git pull; fi
@@ -82,6 +91,16 @@ else
     mkdir -p $DEST
     cd $DEST
     git clone "git@github.com:crystaluniverse/crystaldo"
+fi
+
+if ! [ -L $DEST/crystaldo/lib/crystaltools ]; then
+echo "- LINK CRYSTALTOOLS"
+ln -sf "$DEST/crystaltools" "$DEST/crystaldo/lib/crystaltools"
+fi
+
+if ! [ -L $DEST/crystaldo/lib/crystaldocker ]; then
+echo "- LINK CRYSTALDOCKER"
+ln -sf "$DEST/crystaldocker" "$DEST/crystaldo/lib/crystaldocker"
 fi
 
 cd $DEST/crystaldo
@@ -92,7 +111,6 @@ then
 fi
 
 if ! [ -x "$(command -v ct)" ]; then
-    # rm -f /usr/local/bin/ct 2>&1 > /dev/null
     bash build.sh
 fi
 

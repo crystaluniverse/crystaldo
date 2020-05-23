@@ -4,3 +4,15 @@ shards:
     github: at-grandpa/clim
     version: 0.12.0
 
+  crystaltools:
+    github: crystaluniverse/crystaltools
+    commit: e3126f87050fa90c79ae610c5118c6a07512fcc2
+
+  crystar:
+    github: naqvis/crystar
+    version: 0.1.5
+
+  docker:
+    github: aca-labs/crystal-docker
+    commit: d68a89e1ed47f2e95ab9fd854e54f98e54e1697d
+

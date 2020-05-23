@@ -6,10 +6,12 @@ TODO: Write a description here
 
 ## to get started
 
-a oneliner gets you going
+a oneliner gets you going (will remove existing installed version & rebuild)
 
 ```
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/threefoldfoundation/crystaldo/master/install.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/crystaluniverse/crystaldo/master/install.sh)" a pull reset
+#next will only execute if not installed yet
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/crystaluniverse/crystaldo/master/install.sh)"
 ```
 
 ## libs used
