@@ -18,9 +18,14 @@ dependencies:
   clim:
     github: at-grandpa/clim
     version: 0.12.0
-  kemal:
-    github: kemalcr/kemal    
-    
+  toml:
+    github: crystal-community/toml.cr
+    branch: master    
+  redis:
+    github: stefanwille/crystal-redis
+    version: ~> 2.6.0    
+
+        
 crystal: 0.34.0
 
 license: MIT

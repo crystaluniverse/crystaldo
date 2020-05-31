@@ -1,52 +1,192 @@
 require "clim"
+require "crystaltools"
 
-module CrystalTool
+module CrystalDo
   class Cli < Clim
+    include CrystalTools
+
     main do
       desc "Crystal Tool."
       usage "ct [sub_command] [arguments]"
       help short: "-h"
+
       run do |opts, args|
         puts opts.help_string # => help string.
       end
 
+      sub "stop" do
+        desc "cleanup"
+        help short: "-h"
+        usage "ct stop"
+        run do |opts, args|
+          RedisFactory.core_stop()
+        end
+      end
+
+      sub "code" do
+        desc "open code editor (visual studio code)"
+        help short: "-h"
+        usage "ct code NAME"
+        argument "name", type: String, required: false, desc: "name of the repo, if not mentioned is the last one", default: ""
+        option "-e WORD", "--env=WORD", type: String, desc: "environment can be e.g. testing, production, is a prefix to github dir in code.", default: ""
+        run do |opts, args|
+          gitrepo_factory = GITRepoFactory.new
+          r = gitrepo_factory.get(name: args.name , environment: opts.env)          
+          Executor.exec "code '#{r.@path}'"
+        end
+      end
+
+
+      # TODO: hamdy, how can we make this more modular, want to put in different files, e.g. per topic e.g. git
       sub "git" do
         desc "work with git"
+        help short: "-h"
         usage "ct git [cmd] [arguments]"
         run do |opts, args|
           puts opts.help_string
-        end        
+        end
+
+        sub "push" do
+
+          help short: "-h"
+          usage "ct git push [options] "
+          desc "commit changes & push to git repository"
+
+          option "-e WORD", "--env=WORD", type: String, desc: "environment can be e.g. testing, production, is a prefix to github dir in code.", default: ""
+          option "-v", "--verbose", type: Bool, desc: "Verbose."
+          option "-n WORDS", "--name=WORDS", type: String, desc: "Will look for destination in ~/code which has this name, if found will use it", default: ""
+          option "-b WORDS", "--branch=WORDS", type: String, desc: "If we need to change the branch for push", default: ""
+          argument "message", type: String, required: true, desc: "message for the commit when pushing"
+
+          run do |opts, args|
+            gitrepo_factory = GITRepoFactory.new
+
+            if opts.name.includes?(',')
+              names = opts.name.split(",")
+            else
+              names = [opts.name]
+            end
+
+            names.each do |name2|
+              # CrystalTools.log "commit #{name2}", 1
+              r = gitrepo_factory.get(name: name2, environment: opts.env)
+              if opts.branch != ""
+                raise "not implemented"
+              end
+              r.commit_pull_push(msg: args.message)
+            end
+          end
+
+
+
+        end
 
         sub "pull" do
           help short: "-h"
-          argument "giturl", type: String, required: true,
-          desc: "
-            url e.g. https://github.com/at-grandpa/clim
-            url e.g. git@github.com:at-grandpa/clim.git
-            "
+          usage "ct git pull [options] "
+          desc "pull git repository, if local changes will ask to commit if in interactive mode (default)"
 
-          argument "dest", type: String,
+          option "-d WORDS", "--dest=WORDS", type: String, default: "",
             desc: "
               destination if not specified will be
               ~code/github/at-grandpa/clim
               "
 
-          option "-v", "--verbose", type: Bool, desc: "Verbose."  
-          option "-name", "--name", type: Bool, desc: "Will look for destination in ~/code which has this name, if found will use it"  
-          option "-r", "--reset", type: Bool, desc: "Will reset the local git, means overwrite whatever changes done."  
-          desc "get git repository, if local changes will ask to commit if in interactive mode (default)"
-          usage "ct git get [options] [url]"
+          option "-e WORD", "--env=WORD", type: String, desc: "environment can be e.g. testing, production, is a prefix to github dir in code.", default: ""
+          option "-v", "--verbose", type: Bool, desc: "Verbose."
+          option "-n WORD", "--name=WORD", type: String, desc: "Will look for destination in ~/code which has this name, if found will use it", default: ""
+          option "-b WORD", "--branch=WORD", type: String, desc: "Branch of the repo, not needed to specify", default: ""
+          option "-r WORD", "--reset=WORD", type: Bool, desc: "Will reset the local git, means overwrite whatever changes done.", default: false
+          option "--depth=WORD", type: Int32, desc: "Depth of cloning. default all.", default: 0
+
+          argument "url", type: String, required: false, default: "",
+            desc: "
+              pull git repository, if local changes will ask to commit if in interactive mode (default)
+              url e.g. https://github.com/at-grandpa/clim
+              url e.g. git@github.com:at-grandpa/clim.git
+              "
+
           run do |opts, args|
-            # pp opts
-            # pp args
-            puts "git clone #{args.giturl} #{opts.verbose}"
+            gitrepo_factory = GITRepoFactory.new
+
+            r = gitrepo_factory.get(opts.name, path = opts.dest, url = args.url, branch = opts.branch)
+            if opts.env != ""
+              r.environment = opts.env
+            end
+            if opts.branch != ""
+              r.branch = opts.branch
+            end
+            if opts.reset
+              r.reset
+            else
+              r.pull
+            end
+            gitrepo_factory.repo_remember r
+          end
+        end
+      end
+
+      sub "tmux" do
+        help short: "-h"
+        desc "work with tmux"
+        usage "ct tmux [cmd] [options]"
+        run do |opts, args|
+          puts opts.help_string
+        end
+
+        sub "list" do
+          help short: "-h"
+          usage "ct tmux list [options] "
+          desc "find all sessions & windows"
+          option "-s WORD", "--session=WORD", type: String, desc: "Name of session", default: "default"
+
+          run do |opts, args|
+            TMUXFactory.list(session = opts.session)
           end
         end
 
-      end
+        sub "stop" do
+          help short: "-h"
+          usage "ct tmux stop[options] "
+          desc "stop a window or the fill session, if window not specified will kill the session"
+          option "-n WORDS", "--name=WORDS", type: String, desc: "Name of session", default: ""
+          option "-w WORDS", "--window=WORDS", type: String, desc: "Name of window", default: ""
 
+          run do |opts, args|
+            if opts.window == "" && opts.name == ""
+              TMUXFactory.stop()
+              return
+            end
+            session = TMUXFactory.session_get(name: opts.name)
+            if opts.window == ""
+              session.stop
+            else
+              window = session.window_get(name: opts.window)
+              window.stop
+            end
+            TMUXFactory.list
+          end
+        end
+
+        sub "run" do
+          help short: "-h"
+          usage "ct tmux run cmd [options] "
+          desc "run a command in a window in a tmux session"
+          option "-n WORDS", "--name=WORDS", type: String, desc: "Name of session", default: "default"
+          option "-w WORDS", "--window=WORDS", type: String, desc: "Name of window", default: "default"
+          option "-r", "--reset", type: Bool, desc: "Kill the window first", default: true
+          option "-c WORDS", "--check=WORDS", type: String, desc: "Check to do, look for string in output of window.", default: ""
+          argument "cmd", type: String, required: true, desc: "command to execute in the window"
+
+          run do |opts, args|
+            session = TMUXFactory.session_get(name: opts.name)
+            window = session.window_get(name: opts.window)
+            window.execute cmd: args.cmd, check: opts.check, reset: opts.reset
+          end
+        end
+      end
     end
   end
 end
 
-CrystalTool::Cli.start(ARGV)
+CrystalDo::Cli.start(ARGV)
