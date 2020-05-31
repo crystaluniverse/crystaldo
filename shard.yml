@@ -12,9 +12,10 @@ dependencies:
   # terminimal:
   #   github: aca-labs/terminimal    
   crystaltools:
-    github: crystaluniverse/crystaltools  
+    github: crystaluniverse/crystaltools 
+    branch: master 
   crystaldocker:
-    github: crystaluniverse/crystaldocker      
+    github: crystaluniverse/crystaldocker  
   clim:
     github: at-grandpa/clim
     version: 0.12.0
