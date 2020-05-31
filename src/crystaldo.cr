@@ -185,6 +185,28 @@ module CrystalDo
           end
         end
       end
+
+      sub "sshconn" do
+        help short: "-h"
+        desc "work with ssh tunnels"
+        usage "ct sshconn [cmd] [options]"
+        run do |opts, args|
+          puts opts.help_string
+        end
+
+        sub "start" do
+          help short: "-h"
+          usage "ct sshconn start [options]"
+          desc "establish ssh tunnels connections"
+          argument "config", type: String, required: true, desc: "configuration file path"
+
+          run do |opts, args|
+            sshconn = SSHConnectionTool.new args.config
+            sshconn.start
+          end
+        end
+      end
+
     end
   end
 end
