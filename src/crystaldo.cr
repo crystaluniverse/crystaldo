@@ -1,6 +1,6 @@
 require "clim"
 require "crystaltools"
-
+require "./gittrigger"
 
 module CrystalDo
   class Cli < Clim
@@ -241,6 +241,25 @@ module CrystalDo
           end
         end
       end
+
+      sub "gittrigger" do
+        help short: "-h"
+        desc "work with git trigger"
+        usage "ct gittrigger [cmd] [options]"
+        run do |opts, args|
+          puts opts.help_string
+        end
+
+        sub "start" do
+          help short: "-h"
+          usage "ct neph start"
+          desc "start git trigger server"
+          run do |opts, args|
+            GitTrigger.start
+          end
+        end
+      end
+
     end
   end
 end
