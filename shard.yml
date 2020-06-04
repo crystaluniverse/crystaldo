@@ -12,8 +12,8 @@ dependencies:
   # terminimal:
   #   github: aca-labs/terminimal    
   crystaltools:
-    github: crystaluniverse/crystaltools 
-    branch: master 
+    github: crystaluniverse/crystaltools
+    branch: master
   crystaldocker:
     github: crystaluniverse/crystaldocker  
   clim:
@@ -24,9 +24,11 @@ dependencies:
     branch: master    
   redis:
     github: stefanwille/crystal-redis
-    version: ~> 2.6.0    
+    version: ~> 2.6.0
+  neph:
+    github: tbrand/neph
+    version: 0.2.12
 
-        
 crystal: 0.34.0
 
 license: MIT

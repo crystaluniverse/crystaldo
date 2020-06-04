@@ -1,5 +1,7 @@
 require "clim"
 require "crystaltools"
+require "neph"
+
 
 module CrystalDo
   class Cli < Clim
@@ -207,6 +209,39 @@ module CrystalDo
         end
       end
 
+      sub "neph" do
+        help short: "-h"
+        desc "work with neph"
+        usage "ct neph [cmd] [options]"
+        run do |opts, args|
+          puts opts.help_string
+        end
+
+        sub "exec" do
+          help short: "-h"
+          usage "ct neph exec [options]"
+          desc "execute jobs using neph"
+
+          option "-l WORD", "--log-mode=WORD", type: String, desc: "Log modes [NORMAL/CI/QUIET/AUTO]", default: "AUTO"
+          option "-e WORD", "--exec-mode=WORD", type: String, desc: "Execution modes [parallel/sequential]", default: "parallel"
+          argument "config", type: String, required: true, desc: "configuration file path"
+
+          run do |opts, args|
+            neph = NephExecuter.new config_path: args.config, log_mode: opts.log_mode, exec_mode: opts.exec_mode
+            neph.exec
+          end
+        end
+
+        sub "clean" do
+          help short: "-h"
+          usage "ct neph clean"
+          desc "cleaning caches"
+          run do |opts, args|
+            neph = NephExecuter.new
+            neph.clean
+          end
+        end
+      end
     end
   end
 end
