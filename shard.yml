@@ -19,15 +19,6 @@ dependencies:
   clim:
     github: at-grandpa/clim
     version: 0.12.0
-  toml:
-    github: crystal-community/toml.cr
-    branch: master    
-  redis:
-    github: stefanwille/crystal-redis
-    version: ~> 2.6.0
-  neph:
-    github: tbrand/neph
-    version: 0.2.12
 
 crystal: 0.34.0
 
