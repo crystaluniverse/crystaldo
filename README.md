@@ -30,6 +30,12 @@ Go to repo settings page and add new webhook and set the url of the webhook to `
 
 ### Add deployment script to repos
 add the `.neph.yml` file to the root directory of the repo
+```
+main:
+  commands:
+    - echo "This is a first line!"
+    - echo "This is a second line!"
+```
 > Check the syntax [here](https://github.com/tbrand/neph#usage)
 
 ### Start git trigger server
