@@ -47,6 +47,7 @@ module CrystalDo
           puts opts.help_string
         end
 
+
         sub "push" do
 
           help short: "-h"
@@ -60,16 +61,11 @@ module CrystalDo
           argument "message", type: String, required: true, desc: "message for the commit when pushing"
 
           run do |opts, args|
+
             gitrepo_factory = GITRepoFactory.new
-
-            if opts.name.includes?(',')
-              names = opts.name.split(",")
-            else
-              names = [opts.name]
-            end
-
+            names = gitrepo_factory.repo_names_get opts.name
             names.each do |name2|
-              # CrystalTools.log "commit #{name2}", 1
+              # CrystalTools.log "push/commit #{name2}", 1
               r = gitrepo_factory.get(name: name2, environment: opts.env)
               if opts.branch != ""
                 raise "not implemented"
@@ -77,8 +73,6 @@ module CrystalDo
               r.commit_pull_push(msg: args.message)
             end
           end
-
-
 
         end
 
@@ -90,7 +84,7 @@ module CrystalDo
           option "-d WORDS", "--dest=WORDS", type: String, default: "",
             desc: "
               destination if not specified will be
-              ~code/github/at-grandpa/clim
+              ~code/github/$account/$repo/
               "
 
           option "-e WORD", "--env=WORD", type: String, desc: "environment can be e.g. testing, production, is a prefix to github dir in code.", default: ""
@@ -108,21 +102,25 @@ module CrystalDo
               "
 
           run do |opts, args|
-            gitrepo_factory = GITRepoFactory.new
 
-            r = gitrepo_factory.get(opts.name, path = opts.dest, url = args.url, branch = opts.branch)
-            if opts.env != ""
-              r.environment = opts.env
+            gitrepo_factory = GITRepoFactory.new
+            names = gitrepo_factory.repo_names_get opts.name
+            names.each do |name2| 
+              puts "PULL: #{name2}"               
+              r = gitrepo_factory.get(name: name2, path: opts.dest, url: args.url, branch: opts.branch)
+              if opts.env != ""
+                r.environment = opts.env
+              end
+              if opts.branch != ""
+                r.branch = opts.branch
+              end
+              if opts.reset
+                r.reset
+              else
+                r.pull
+              end
+              # gitrepo_factory.repo_remember r
             end
-            if opts.branch != ""
-              r.branch = opts.branch
-            end
-            if opts.reset
-              r.reset
-            else
-              r.pull
-            end
-            gitrepo_factory.repo_remember r
           end
         end
       end
