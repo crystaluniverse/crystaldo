@@ -58,7 +58,7 @@ module CrystalDo
           option "-v", "--verbose", type: Bool, desc: "Verbose."
           option "-n WORDS", "--name=WORDS", type: String, desc: "Will look for destination in ~/code which has this name, if found will use it", default: ""
           option "-b WORDS", "--branch=WORDS", type: String, desc: "If we need to change the branch for push", default: ""
-          argument "message", type: String, required: true, desc: "message for the commit when pushing"
+          option "-m WORDS", "--message=WORDS", type: String, required: false, desc: "message for the commit when pushing", default: ""
 
           run do |opts, args|
 
@@ -70,7 +70,7 @@ module CrystalDo
               if opts.branch != ""
                 raise "not implemented"
               end
-              r.commit_pull_push(msg: args.message)
+              r.commit_pull_push(msg: opts.message)
             end
           end
 
@@ -93,6 +93,7 @@ module CrystalDo
           option "-b WORD", "--branch=WORD", type: String, desc: "Branch of the repo, not needed to specify", default: ""
           option "-r WORD", "--reset=WORD", type: Bool, desc: "Will reset the local git, means overwrite whatever changes done.", default: false
           option "--depth=WORD", type: Int32, desc: "Depth of cloning. default all.", default: 0
+          option "-m WORDS", "--message=WORDS", type: String, required: false, desc: "message for the commit when pushing", default: ""
 
           argument "url", type: String, required: false, default: "",
             desc: "
@@ -117,7 +118,7 @@ module CrystalDo
               if opts.reset
                 r.reset
               else
-                r.pull
+                r.pull(msg: opts.message)
               end
               # gitrepo_factory.repo_remember r
             end
