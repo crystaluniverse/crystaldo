@@ -47,21 +47,29 @@ module CrystalDo
           puts opts.help_string
         end
 
-        # sub "changes" do
+        sub "changes" do
 
-        #   help short: "-h"
-        #   usage "ct git check [options] "
-        #   desc "check which repo's have changes"
+          help short: "-h"
+          usage "ct git check [options] "
+          desc "check which repo's have changes"
 
-        #   option "-e WORD", "--env=WORD", type: String, desc: "environment can be e.g. testing, production, is a prefix to github dir in code.", default: ""
+          option "-e WORD", "--env=WORD", type: String, desc: "environment can be e.g. testing, production, is a prefix to github dir in code.", default: ""
 
-        #   run do |opts, args|
-        #     gitrepo_factory = GITRepoFactory.new
+          run do |opts, args|
+            gitrepo_factory = GITRepoFactory.new(environment: opts.env)
 
-        #     gitrepo_factory.scan
-        #   end
+            gitrepo_factory.scan
 
-        # end
+            gitrepo_factory.@repos_path.each do |name2,path|
+              r = gitrepo_factory.get(name: name2)
+              if r.changes
+                puts r
+              end
+            end
+
+          end
+
+        end
 
         sub "push" do
 
