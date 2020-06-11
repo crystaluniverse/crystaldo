@@ -31,8 +31,8 @@ module CrystalDo
         argument "name", type: String, required: false, desc: "name of the repo, if not mentioned is the last one", default: ""
         option "-e WORD", "--env=WORD", type: String, desc: "environment can be e.g. testing, production, is a prefix to github dir in code.", default: ""
         run do |opts, args|
-          gitrepo_factory = GITRepoFactory.new
-          r = gitrepo_factory.get(name: args.name , environment: opts.env)          
+          gitrepo_factory = GITRepoFactory.new(environment: opts.env)
+          r = gitrepo_factory.get(name: args.name)
           Executor.exec "code '#{r.@path}'"
         end
       end
@@ -77,11 +77,11 @@ module CrystalDo
 
           run do |opts, args|
 
-            gitrepo_factory = GITRepoFactory.new
-            names = gitrepo_factory.repo_names_get(name: opts.name , env: opts.env)
+            gitrepo_factory = GITRepoFactory.new(environment: opts.env)
+            names = gitrepo_factory.repo_names_get(name: opts.name)
             names.each do |name2|
               # CrystalTools.log "push/commit #{name2}", 1
-              r = gitrepo_factory.get(name: name2, environment: opts.env)
+              r = gitrepo_factory.get(name: name2)
               if opts.branch != ""
                 raise "not implemented"
               end
@@ -119,8 +119,8 @@ module CrystalDo
 
           run do |opts, args|
 
-            gitrepo_factory = GITRepoFactory.new
-            names = gitrepo_factory.repo_names_get(name: opts.name , env: opts.env)
+            gitrepo_factory = GITRepoFactory.new(environment: opts.env)
+            names = gitrepo_factory.repo_names_get(name: opts.name)
             names.each do |name2| 
               puts "PULL: #{name2}"               
               r = gitrepo_factory.get(name: name2, path: opts.dest, url: args.url, branch: opts.branch)
