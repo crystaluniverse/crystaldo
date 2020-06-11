@@ -127,17 +127,15 @@ module CrystalDo
 
           run do |opts, args|
 
-            gitrepo_factory = GITRepoFactory.new(environment: opts.env)
+            gitrepo_factory = GITRepoFactory.new(environment: opts.env)          
+            if args.url
+              r = gitrepo_factory.get(path: opts.dest, url: args.url, branch: opts.branch)
+              opts.name = r.@name
+            end
             names = gitrepo_factory.repo_names_get(name: opts.name)
             names.each do |name2| 
               puts "PULL: #{name2}"               
               r = gitrepo_factory.get(name: name2, path: opts.dest, url: args.url, branch: opts.branch)
-              if opts.env != ""
-                r.environment = opts.env
-              end
-              if opts.branch != ""
-                r.branch = opts.branch
-              end
               if opts.reset
                 r.reset
               else
