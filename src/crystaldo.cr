@@ -47,6 +47,21 @@ module CrystalDo
           puts opts.help_string
         end
 
+        # sub "changes" do
+
+        #   help short: "-h"
+        #   usage "ct git check [options] "
+        #   desc "check which repo's have changes"
+
+        #   option "-e WORD", "--env=WORD", type: String, desc: "environment can be e.g. testing, production, is a prefix to github dir in code.", default: ""
+
+        #   run do |opts, args|
+        #     gitrepo_factory = GITRepoFactory.new
+
+        #     gitrepo_factory.scan
+        #   end
+
+        # end
 
         sub "push" do
 
@@ -63,7 +78,7 @@ module CrystalDo
           run do |opts, args|
 
             gitrepo_factory = GITRepoFactory.new
-            names = gitrepo_factory.repo_names_get opts.name
+            names = gitrepo_factory.repo_names_get(name: opts.name , env: opts.env)
             names.each do |name2|
               # CrystalTools.log "push/commit #{name2}", 1
               r = gitrepo_factory.get(name: name2, environment: opts.env)
@@ -105,7 +120,7 @@ module CrystalDo
           run do |opts, args|
 
             gitrepo_factory = GITRepoFactory.new
-            names = gitrepo_factory.repo_names_get opts.name
+            names = gitrepo_factory.repo_names_get(name: opts.name , env: opts.env)
             names.each do |name2| 
               puts "PULL: #{name2}"               
               r = gitrepo_factory.get(name: name2, path: opts.dest, url: args.url, branch: opts.branch)
