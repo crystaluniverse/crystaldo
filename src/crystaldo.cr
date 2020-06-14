@@ -20,7 +20,7 @@ module CrystalDo
         help short: "-h"
         usage "ct stop"
         run do |opts, args|
-          RedisFactory.core_stop()
+          RedisFactory.core_stop
         end
       end
 
@@ -37,7 +37,6 @@ module CrystalDo
         end
       end
 
-
       # TODO: hamdy, how can we make this more modular, want to put in different files, e.g. per topic e.g. git
       sub "git" do
         desc "work with git"
@@ -48,7 +47,6 @@ module CrystalDo
         end
 
         sub "changes" do
-
           help short: "-h"
           usage "ct git check [options] "
           desc "check which repo's have changes"
@@ -60,21 +58,18 @@ module CrystalDo
 
             gitrepo_factory.scan
 
-            gitrepo_factory.@repos_path.each do |name2,path|
+            gitrepo_factory.@repos_path.each do |name2, path|
               r = gitrepo_factory.get(name: name2)
               if r.changes
-                #TODO: implement, that we can see which repo's changed, goal is to make it easy for people to see which repo's have changes
+                # TODO: implement, that we can see which repo's changed, goal is to make it easy for people to see which repo's have changes
                 puts r
                 CrystalTools.error "implement"
               end
             end
-
           end
-
         end
 
         sub "push" do
-
           help short: "-h"
           usage "ct git push [options] "
           desc "commit changes & push to git repository"
@@ -86,7 +81,6 @@ module CrystalDo
           option "-m WORDS", "--message=WORDS", type: String, required: false, desc: "message for the commit when pushing", default: ""
 
           run do |opts, args|
-
             gitrepo_factory = GITRepoFactory.new(environment: opts.env)
             names = gitrepo_factory.repo_names_get(name: opts.name)
             names.each do |name2|
@@ -98,7 +92,6 @@ module CrystalDo
               r.commit_pull_push(msg: opts.message)
             end
           end
-
         end
 
         sub "pull" do
@@ -128,15 +121,15 @@ module CrystalDo
               "
 
           run do |opts, args|
-
-            gitrepo_factory = GITRepoFactory.new(environment: opts.env)          
+            gitrepo_factory = GITRepoFactory.new(environment: opts.env)
+            thereponame = opts.name
             if args.url
               r = gitrepo_factory.get(path: opts.dest, url: args.url, branch: opts.branch)
-              opts.name = r.@name
+              thereponame = r.name
             end
-            names = gitrepo_factory.repo_names_get(name: opts.name)
-            names.each do |name2| 
-              puts "PULL: #{name2}"               
+            names = gitrepo_factory.repo_names_get(name: thereponame)
+            names.each do |name2|
+              puts "PULL: #{name2}"
               r = gitrepo_factory.get(name: name2, path: opts.dest, url: args.url, branch: opts.branch)
               if opts.reset
                 r.reset
@@ -177,7 +170,7 @@ module CrystalDo
 
           run do |opts, args|
             if opts.window == "" && opts.name == ""
-              TMUXFactory.stop()
+              TMUXFactory.stop
               return
             end
             session = TMUXFactory.session_get(name: opts.name)
@@ -281,7 +274,6 @@ module CrystalDo
           end
         end
       end
-
     end
   end
 end
