@@ -62,8 +62,7 @@ module CrystalDo
               r = gitrepo_factory.get(name: name2)
               if r.changes
                 # TODO: implement, that we can see which repo's changed, goal is to make it easy for people to see which repo's have changes
-                puts r
-                CrystalTools.error "implement"
+                puts "#{r} has changes."
               end
             end
           end
